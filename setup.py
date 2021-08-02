@@ -13,7 +13,6 @@ from setuptools import setup
 
 from zoomeye import __version__
 
-
 DEPENDENCIES = open('requirements.txt', 'r', encoding='utf-8').read().split('\n')
 README = open('README.rst', 'r', encoding='utf-8').read()
 
@@ -44,3 +43,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 )
+
+
+#  我在这里也修改代码
