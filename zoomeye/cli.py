@@ -13,14 +13,23 @@ import os
 import sys
 import argparse
 
+# os.path.realpath(__file__) 文件的绝对路径  eg:C:\knownsec\study\test.7.29.py
+# os.path.dirname(os.path.realpath(__file__)) 文件所在目录的目录名  eg:C:\knownsec\study
+# os.path.dirname(os.path.dirname(os.path.realpath(__file__)))  目录所在的目录名 eg: C:\knownsec    ZoomEye-python/zoomeye
 module_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+# sys.path 是一个列表
+# 实际项目中，把自己项目所在的地址放在sys.path列表里面，便于快速导入模块
 sys.path.insert(1, module_path)
 
 from zoomeye import core
+# 导入了那个大图片
 from zoomeye.config import BANNER
 
 
 def get_version():
+    """
+    获取版本的时候打印这个大图片
+    """
     print(BANNER)
 
 
@@ -36,9 +45,14 @@ def main():
     :return:
     """
 
+    # ZoomEyeParser inherit argparse. ArgumentParser, have same init method
+    # prog: program name
     parser = ZoomEyeParser(prog='zoomeye')
+    # argparse add subparse object
     subparsers = parser.add_subparsers()
     # show ZoomEye-python version number
+    # -v or --version optional argument
+    # action: trigger -v or --version true, else false
     parser.add_argument(
         "-v",
         "--version",
@@ -47,39 +61,29 @@ def main():
     )
 
     # zoomeye account info
+    # info argument binding core.info
     parser_info = subparsers.add_parser("info", help="Show ZoomEye account info")
     parser_info.set_defaults(func=core.info)
 
     # query zoomeye data
-    parser_search = subparsers.add_parser(
-        "search",
-        help="Search the ZoomEye database"
-    )
-
-    parser_search.add_argument(
-        "dork",
-        help="The ZoomEye search keyword or ZoomEye exported file"
-    )
-    parser_search.add_argument(
-        "-num",
-        default=20,
-        help="The number of search results that should be returned, support 'all'",
-        type=str,
-        metavar='value'
-    )
-    parser_search.add_argument(
-        "-facet",
-        default=None,
-        nargs='?',
-        const='country',
-        type=str,
-        help=('''
-            Perform statistics on ZoomEye database,
-            host field: [app,device,service,os,port,country,city]
-            web field: [webapp,component,framework,server,waf,os,country]
-        '''),
-        metavar='field'
-    )
+    # name or flags - 选项字符串的名字或者列表，例如foo或者 - f, --foo。
+    # metavar - 在 usage 说明中的参数名称，对于必选参数默认就是参数名称，对于可选参数默认是全大写的参数名称.
+    # const - action 和 nargs 所需要的常量值。
+    # action - 命令行遇到参数时的动作，默认值是 store。
+    # nargs - 应该读取的命令行参数个数，可以是具体的数字，或者是?号，当不指定值时对于 Positional argument 使用 default，
+    #   对于 Optional argument 使用 const；或者是 * 号，表示 0 或多个参数；或者是 + 号表示 1 或多个参数。
+    parser_search = subparsers.add_parser("search", help="Search the ZoomEye database")
+    parser_search.add_argument("dork", help="The ZoomEye search keyword or ZoomEye exported file")
+    parser_search.add_argument("-num", default=20,
+                               help="The number of search results that should be returned, support 'all'", type=str,
+                               metavar='value')
+    parser_search.add_argument("-facet", default=None, nargs='?', const='country', type=str,
+                               help=('''
+                                    Perform statistics on ZoomEye database,
+                                    host field: [app,device,service,os,port,country,city]
+                                    web field: [webapp,component,framework,server,waf,os,country]
+                                    '''), metavar='field'
+                               )
     parser_search.add_argument(
         "-filter",
         default=None,

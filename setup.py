@@ -9,6 +9,7 @@
 * Author: liuf5
 */
 """
+# setuptools是常用的打包工具。
 from setuptools import setup
 
 from zoomeye import __version__
@@ -25,6 +26,8 @@ setup(
     long_description_content_type='text/x-rst',
     author='404 Team@Knownsec',
     url='https://github.com/knownsec/zoomeye-python',
+    # 包名
+    # 如果给packages指定find_packages()，意为包括在本目录下的所有Python包。
     packages=['zoomeye'],
     entry_points={'console_scripts': ['zoomeye=zoomeye.cli:main']},
     install_requires=DEPENDENCIES,

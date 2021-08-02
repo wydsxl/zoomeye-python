@@ -3,7 +3,7 @@
 
 """
 * Filename: zoomeye.py
-* Description:
+* Description: SoftwareDevelopmentKit 软件开发工具
 * Time: 2020.11.25
 * Author: liuf5
 */
@@ -86,12 +86,12 @@ class ZoomEye:
         self.api_key = api_key
         self.access_token = access_token
 
-        self.raw_data = None
+        self.raw_data = None  # 查询到的json字符串
         # process data, list
-        self.data_list = None
-        self.total = None
-        self.search_type = None
-        self.facet_data = None
+        self.data_list = None  # json字符串中取出的match列表
+        self.total = None  # 结果总数
+        self.search_type = None  # host or web
+        self.facet_data = None  # 统计项目，如果为多个，使用, 号分隔各个统计项
 
         self.login_api = "https://api.zoomeye.org/user/login"
         self.search_api = "https://api.zoomeye.org/{}/search"
@@ -115,7 +115,7 @@ class ZoomEye:
             resp = requests.post(url, params, headers)
         # if response succeed and status code is 200 return json data
         if resp and resp.status_code == 200:
-            data = resp.json()
+            data = resp.json()  # 等价于json.loads(resp)
             return data
         # Request data exceeds the total amount of ZoomEye data,
         # return all data instead of throwing an exception
@@ -165,14 +165,14 @@ class ZoomEye:
                    'API-KEY': self.api_key,
                    }
         params = {'query': dork, 'page': page, 'facets': facets}
-        resp = self._request(search_api, params=params, headers=headers)
-        if resp and "matches" in resp:
+        resp = self._request(search_api, params=params, headers=headers)  # data.json() 一个json字符串
+        if resp and "matches" in resp:  # matches 结果集
             matches = resp.get('matches')
             result = matches
-            self.raw_data = resp
-            self.data_list = matches
-            self.facet_data = resp.get("facets")
-            self.total = resp.get("total")
+            self.raw_data = resp  # json字符串
+            self.data_list = matches  # 结果集
+            self.facet_data = resp.get("facets")  # 统计项目，如果为多个，使用, 号分隔各个统计项
+            self.total = resp.get("total")  # 结果总数
 
         return result
 

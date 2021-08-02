@@ -11,7 +11,6 @@
 """
 from zoomeye import __version__, __site__
 
-
 # save api key file and json web token file path
 ZOOMEYE_CONFIG_PATH = "~/.config/zoomeye/setting"
 
@@ -26,7 +25,6 @@ STRING_MAX_LENGTH = 23
 
 # cache file name
 FILE_NAME = "/{}_{}.json"
-
 
 RADIUS = 7
 

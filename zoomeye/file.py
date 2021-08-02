@@ -13,6 +13,8 @@ import os
 
 from zoomeye import config
 
+# config.ZOOMEYE_CONFIG_PATH: "~/.config/zoomeye/setting"
+# os.path.expanduser: switch ~ to user catalog
 zoomeye_dir = os.path.expanduser(config.ZOOMEYE_CONFIG_PATH)
 
 

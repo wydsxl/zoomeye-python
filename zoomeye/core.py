@@ -39,7 +39,7 @@ def key_init(key):
     with open(key_file, 'w') as f:
         f.write(key)
     show.printf("successfully initialized", color="green")
-    # change the permission of the configuration file to read-only
+    # change the permission of the configurati on file to read-only
     os.chmod(key_file, 0o600)
 
 
@@ -105,8 +105,9 @@ def search(args):
     figure = args.figure
     force = args.force
     resource = args.type
-
+    #
     cli_zoom = CliZoomEye(dork, num, resource=resource, facet=facet, force=force)
+
     if filters:
         cli_zoom.filter_data(filters, save)
         return
@@ -135,6 +136,7 @@ def info(args):
     :return:
     """
     api_key, access_token = file.get_auth_key()
+    # object
     zm = ZoomEye(api_key=api_key, access_token=access_token)
     # get user information
     user_data = zm.resources_info()

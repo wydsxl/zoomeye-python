@@ -263,6 +263,7 @@ class Cache:
         self.dork = dork
         self.page = page
         self.resource = resource
+        # config.ZOOMEYE_CACHE_PATH: "~/.config/zoomeye/cache"
         self.cache_folder = os.path.expanduser(config.ZOOMEYE_CACHE_PATH)
         self.filename = self.cache_folder + config.FILE_NAME.format(md5_convert(dork + self.resource), page)
 
@@ -331,7 +332,7 @@ class CliZoomEye:
 
     def __init__(self, dork, num, resource, facet=None, force=False):
         self.dork = dork
-        self.num = num
+        self.num = num  # 默认20
         self.resource = resource
         self.facet = facet
         self.force = force
@@ -344,6 +345,8 @@ class CliZoomEye:
         self.zoomeye = ZoomEye(api_key=self.api_key, access_token=self.access_token)
 
     def handle_page(self):
+
+        """通过传入的 -num 转换为page数 没有指定的话默认20"""
         try:
             num = int(self.num)
             if num % 20 == 0:
@@ -362,9 +365,12 @@ class CliZoomEye:
                             resource=self.resource,
                             facets=self.facet
                         )
-                        self.num = self.zoomeye.total
+                        self.num = self.zoomeye.total  # self.zoomeye.dork_search()会给total赋值
+
+                        #
                         cache = Cache(self.dork, page=1, resource=self.resource)
                         cache.save(json.dumps(self.zoomeye.raw_data))
+
                         if self.num % 20 == 0:
                             return int(self.num / 20)
                         return int(self.num / 20) + 1
@@ -388,6 +394,7 @@ class CliZoomEye:
         else:
             page_count = self.handle_page()
             for page in range(page_count):
+                # cache handler
                 cache_file = Cache(self.dork, self.resource, page)
                 if cache_file.check() and self.force is False:
                     dork_data_list, self.facet_data, self.total = cache_file.load()
@@ -424,15 +431,20 @@ class CliZoomEye:
     def filter_data(self, keys, save=False):
         """
         according to web/search or host/search select filter field
+        web: 域名 wmap
+        host: ip xmap
         """
         if save is not True:
             self.request_data()
+
         if self.resource == 'host':
             tables = fields_tables_host
         if self.resource == 'web':
             tables = fields_tables_web
+
         has_equal = []
         not_equal = []
+
         # set the ip field to be displayed by default and in the first place
         key_list = keys.split(',')
         try:
@@ -443,6 +455,7 @@ class CliZoomEye:
         # add IP to the first item when there is no IP
         except ValueError:
             key_list.insert(0, 'ip')
+
         # process user input fields, separating single fields from fields with equal signs.
         for key in key_list:
             res = key.split('=')
